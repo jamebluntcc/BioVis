@@ -10,7 +10,7 @@ library(stringr)
 argv <- commandArgs(T)
 options(stringsAsFactors = F)
 heatmap_data_path <- argv[1]
-heatmap_data_path <- str_c(test_data,"test_heatmap_data.100.txt",sep = "/")
+heatmap_data_path <- str_c("test_data","test_heatmap_data.100.txt",sep = "/")
 heatmap_data <- read.delim(heatmap_data_path,header = T)
 heatmap_data <- apply(heatmap_data,2,as.numeric)
 #annotation_col
