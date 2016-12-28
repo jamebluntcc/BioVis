@@ -18,12 +18,14 @@ output_path <- argv[5]
 #----theme set-----
 enrich_theme <- theme_bw()+theme(
   legend.key = element_blank(),
-  axis.text.x = element_text(color = "black",face = "bold",angle = 90,hjust = 1,vjust = 0.5),
-  axis.text.y = element_text(color = "black",face = "bold"),
+  axis.text.x = element_text(color = "black",face = "bold",angle = 90,hjust = 1,vjust = 0.5, size = rel(0.6)),
+  axis.text.y = element_text(color = "black",face = "bold", size = rel(0.6)),
+  axis.title.y = element_text(color = "black",face = "bold",size = rel(0.6)),
   panel.grid.minor.x  = element_line(colour = "black"),
   panel.grid.major = element_blank(),
-  strip.text = element_text(face = "bold"),
-  strip.background = element_blank()
+  strip.text = element_blank(),
+  strip.background = element_blank(),
+  legend.text = element_text(size = rel(0.6))
 )
 theme_set(enrich_theme)
 #-----function-------
@@ -65,14 +67,14 @@ enrich_data <- function(data,type,label,show_num,max_name_length,all_count,term_
   data
 }
 
-enrich_barplot <- function(enrich_merge_data,x_lab = "Term",y_lab = "Input Number",break_label1,break_label2){
+enrich_barplot <- function(enrich_merge_data,x_lab = "",y_lab = "Number of genes",break_label1,break_label2){
   p <- ggplot(enrich_merge_data,aes(y=Input_number,x=Term,fill=color))+
-    geom_bar(stat = 'identity')+geom_bar(aes(x=Term,y=expected),fill='black',stat = 'identity')+
+    geom_bar(stat = 'identity', width = 0.8)+geom_bar(aes(x=Term,y=expected),fill='black',stat = 'identity', width = 0.8)+
     geom_text(aes(label = sign),vjust=0.5,hjust = 0.5,size = 3)+
     ylim(c(0,max(enrich_merge_data$Input_number)+max(enrich_merge_data$Input_number)*0.1))+
-    facet_grid(.~label,scales = "free_x")+
+    facet_grid(.~label,scales = "free_x",space = "free")+
     scale_fill_manual(values = c('up'='red','down'='blue','expected'='black'),
-                      breaks = c('expected','up','down'),labels = c('expected',paste(break_label1,'up',sep = "-"),paste(break_label2,'up',sep = "-")))+
+                      breaks = c('expected','up','down'),labels = c('Expected no. of genes',paste("No.",break_label1," up-regulated genes",sep = " "), paste("No.",break_label2," up-regulated genes",sep = " ")))+
     guides(fill = guide_legend(title = ""))+ylab(y_lab)+xlab(x_lab)
   p
 }
@@ -117,9 +119,9 @@ if(enrichment_type == 'kegg'){
   }
   up_data_term_count <- find_count(up_data_count_list)
   down_data_term_count <- find_count(down_data_count_list)
-  kegg_up_data <- enrich_data(up_data,type = 'kegg',label = 'up',show_num = 15,max_name_length = 20,
+  kegg_up_data <- enrich_data(up_data,type = 'kegg',label = 'up',show_num = 15,max_name_length = 90,
                               all_count = find_count(kegg_all_term_count),term_count = up_data_term_count)
-  kegg_down_data <- enrich_data(down_data,type = 'kegg',label = 'down',show_num = 15,max_name_length = 20,
+  kegg_down_data <- enrich_data(down_data,type = 'kegg',label = 'down',show_num = 15,max_name_length = 90,
                                 all_count = find_count(kegg_all_term_count),term_count = down_data_term_count)
   kegg_merge_data <- rbind(kegg_up_data,kegg_down_data)
   kegg_merge_data$Term <- factor(kegg_merge_data$Term,levels = kegg_merge_data$Term)
@@ -128,11 +130,11 @@ if(enrichment_type == 'kegg'){
   kegg_merge_data[dim(kegg_merge_data)[1],c('Input_number','expected')] <- 0
   kegg_merge_data[dim(kegg_merge_data)[1],"color"] <- 'expected'
   ggsave(filename = paste(output_path,paste(first_level_split[1],"kegg_barplot.pdf",sep = "_"),sep = "/"),
-         plot = enrich_barplot(go_merge_data,break_label1 = unlist(strsplit(first_level_split[1],split = "_vs_"))[1],
-                               break_label2 = unlist(strsplit(first_level_split[1],split = "_vs_"))[2]),width = 8,height = dim(go_merge_data)[1]/6)
+         plot = enrich_barplot(kegg_merge_data,break_label1 = unlist(strsplit(first_level_split[1],split = "_vs_"))[1],
+                               break_label2 = unlist(strsplit(first_level_split[1],split = "_vs_"))[2]),height = 8,width = dim(kegg_merge_data)[1]/3)
   ggsave(filename = paste(output_path,paste(first_level_split[1],"kegg_barplot.png",sep = "_"),sep = "/"),
-         plot = enrich_barplot(go_merge_data,break_label1 = unlist(strsplit(first_level_split[1],split = "_vs_"))[1],
-                               break_label2 = unlist(strsplit(first_level_split[1],split = "_vs_"))[2]),width = 8,height = dim(go_merge_data)[1]/6,type = "cairo-png")
+         plot = enrich_barplot(kegg_merge_data,break_label1 = unlist(strsplit(first_level_split[1],split = "_vs_"))[1],
+                               break_label2 = unlist(strsplit(first_level_split[1],split = "_vs_"))[2]),height = 8,width = dim(kegg_merge_data)[1]/3,type = "cairo-png")
 }else if(enrichment_type == 'go'){
   go_all_term_count <- read.delim(all_count_file,header = F)
   all_enrichment_files <- list.files(enrichment_tables_path)
@@ -152,9 +154,9 @@ if(enrichment_type == 'kegg'){
   }
   up_data_term_count <- find_count(up_data_count_list)
   down_data_term_count <- find_count(down_data_count_list)
-  go_up_data <- enrich_data(up_data,type = 'go',label = 'up',show_num = 20,max_name_length = 20,
+  go_up_data <- enrich_data(up_data,type = 'go',label = 'up',show_num = 20,max_name_length = 90,
                               all_count = find_count(go_all_term_count),term_count = up_data_term_count)
-  go_down_data <- enrich_data(down_data,type = 'go',label = 'down',show_num = 20,max_name_length = 20,
+  go_down_data <- enrich_data(down_data,type = 'go',label = 'down',show_num = 20,max_name_length = 90,
                                 all_count = find_count(go_all_term_count),term_count = down_data_term_count)
   go_merge_data <- rbind(go_up_data,go_down_data)
   go_merge_data$Term <- factor(go_merge_data$Term,levels = go_merge_data$Term)
@@ -164,10 +166,10 @@ if(enrichment_type == 'kegg'){
   go_merge_data[dim(go_merge_data)[1],"color"] <- 'expected'
   ggsave(filename = paste(output_path,paste(first_level_split[1],"go_barplot.pdf",sep = "_"),sep = "/"),
          plot = enrich_barplot(go_merge_data,break_label1 = unlist(strsplit(first_level_split[1],split = "_vs_"))[1],
-                               break_label2 = unlist(strsplit(first_level_split[1],split = "_vs_"))[2]),width = 8,height = dim(go_merge_data)[1]/6)
+                               break_label2 = unlist(strsplit(first_level_split[1],split = "_vs_"))[2]),height = 8, width= dim(go_merge_data)[1]/6)
   ggsave(filename = paste(output_path,paste(first_level_split[1],"go_barplot.png",sep = "_"),sep = "/"),
          plot = enrich_barplot(go_merge_data,break_label1 = unlist(strsplit(first_level_split[1],split = "_vs_"))[1],
-                               break_label2 = unlist(strsplit(first_level_split[1],split = "_vs_"))[2]),width = 8,height = dim(go_merge_data)[1]/6,type = "cairo-png")
+                               break_label2 = unlist(strsplit(first_level_split[1],split = "_vs_"))[2]),height = 8, width = dim(go_merge_data)[1]/6,type = "cairo-png")
 }
 
 
