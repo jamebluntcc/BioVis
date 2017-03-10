@@ -3,8 +3,6 @@
 # changed on 2017-3-9 plot mRNA_cluster_plot fix on origin_data dim < 2 and plot out < 9
 ####----
 library(tidyverse)
-#library(pheatmap)
-library(gridExtra)
 library(reshape2)
 library(ggthemes)
 
@@ -19,31 +17,34 @@ my_theme <- theme_calc()+theme(
   axis.text.x = element_text(angle = 90)
 )
 theme_set(my_theme)
-#file_path <- '/media/zxchen/3dddd6c4-2700-41a5-a677-15b165fa4e64/project/mRNA/2017/OM-mRNA-5-Wheat-wangjingyi-P20170303/part1/OM-mRNA-5-Wheat_part1/mRNA_analysis_results/differential_analysis/cluster/clusters_fixed_P_10'
+#output_path <- './'
+#file_path <- '/media/zxchen/3dddd6c4-2700-41a5-a677-15b165fa4e64/project/mRNA/2017/OM-mRNA-7-Rice-P20170305/OM-mRNA-7-Rice/mRNA_analysis_results/differential_analysis/cluster/clusters_fixed_P_10'
+data <- list()
 all_files <- dir(file_path)
-origin_data <- list()
-origin_files <- all_files[grep('subcluster',all_files)] 
+files <- all_files[grep('subcluster',all_files)] 
 for(i in 1:length(files)){
-  origin_data[[i]] <- read.delim(file = paste(file_path,files[i],sep = "/"),header = T,sep = '\t')
-  #data[[i]]$type <- strsplit(files[i],'\\.')[[1]][1]
+  data[[i]] <- read.delim(file = paste(file_path,files[i],sep = "/"),header = T,sep = '\t')
 }
-data_df <- data <- list()
-data <- origin_data
-files <- origin_files
-for(i in 1:length(origin_data)){
-   if(dim(origin_data[[i]])[1] < 2){
-     data <- data[-i]
-     files <- files[-i]
-     }
+
+if(length(files) > 9){
+  data <- data[1:9]
 }
+data_df <- list()
 for(i in 1:length(data)){
   data_df[[i]] <- as.data.frame(cbind(rownames(t(data[[i]])),
                           t(data[[i]])),row.names = 1:dim(data[[i]])[2],
                           stringsAsFactors = F)
-  data_df[[i]][,2:dim(data_df[[i]])[2]] <- apply(data_df[[i]][,2:dim(data_df[[i]])[2]],2,as.numeric)
-  data_df[[i]]$mean <- apply(data_df[[i]][,2:dim(data_df[[i]])[2]],1,mean) %>% round(digits = 3)
-  data_df[[i]]$num <- 1:dim(data_df[[i]])[1]
-  data_df[[i]]$type <- strsplit(files[i],'\\.')[[1]][1]
+  if(is.vector(data_df[[i]][,2:dim(data_df[[i]])[2]])){
+    data_df[[i]][,2:dim(data_df[[i]])[2]] <- as.numeric(data_df[[i]][,2:dim(data_df[[i]])[2]])
+    data_df[[i]]$mean <- mean(data_df[[i]][,2:dim(data_df[[i]])[2]]) %>% round(digits = 3)
+    data_df[[i]]$num <- 1:dim(data_df[[i]])[1]
+    data_df[[i]]$type <- strsplit(files[i],'\\.')[[1]][1]
+  }else{
+    data_df[[i]][,2:dim(data_df[[i]])[2]] <- apply(data_df[[i]][,2:dim(data_df[[i]])[2]],2,as.numeric)
+    data_df[[i]]$mean <- apply(data_df[[i]][,2:dim(data_df[[i]])[2]],1,mean) %>% round(digits = 3)
+    data_df[[i]]$num <- 1:dim(data_df[[i]])[1]
+    data_df[[i]]$type <- strsplit(files[i],'\\.')[[1]][1]
+  }
   names(data_df[[i]]) <- c('name',colnames(t(data[[i]])),'mean','num','type')
 }
 all_subcluster_data <- NULL
@@ -56,7 +57,7 @@ col <- all_subcluster_data$color;names(col) <- col
 cluster_plot <- ggplot(aes(x=reorder(name,num),y=value,group = variable,colour = color),data = all_subcluster_data)+
   geom_line()+geom_point()+expand_limits(y = c(0,1))+scale_color_manual(values = col)+
   xlab("")+ylab("")+guides(color = F)+facet_wrap(~type,nrow = 3,scales = 'free_y')
-cluster_plot
+
 ggsave(filename=paste(output_path, 'cluster_plot.png', sep="/"),type="cairo-png",plot=cluster_plot ,width = 14,height = 15)
 # # for line plot
 # plot_line <- function(data){
