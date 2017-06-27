@@ -31,6 +31,3 @@ fill_col <- c("#386cb0","#fdb462","#7fc97f","#ef3b2c")
 venn_plot(venn_data = list(A=GroupA,B=GroupB,C=GroupC,D=GroupD),fill_colour = fill_col,file_name = 'venn_test_group4.png')
 ```
 ![venn plot group=4](./demo_plots/venn_test_group4.png)
-
-### VennDiagram's param
- - file type:png
