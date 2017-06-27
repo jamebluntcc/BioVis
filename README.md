@@ -38,6 +38,11 @@ manhattan plot 使用 R 的 [qqman](https://cran.r-project.org/web/packages/qqma
 
 ![image](./demo_plots/manhattan.png)
 
+## heatmao plot
+
+heatmap plot 使用 R 的 [pheatmap](https://cran.r-project.org/web/packages/pheatmap/pheatmap.pdf) 包进行可视化。
+
+![image](./demo_plots/pheatmap_demo.png)
 ## wgcna network
 
 network plot 使用 R 的 [ggraph](https://github.com/thomasp85/ggraph) 包进行可视化。默认使用的 layout 是 kamada.kawai 关于所有的 layout 展示可以参考下面：
