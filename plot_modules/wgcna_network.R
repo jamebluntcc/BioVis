@@ -32,7 +32,16 @@ wgcna_clean <- function(wgcna_data,weight_data=0.5){
 test_data <- wgcna_clean(wgcna_data)
 graph_data <- graph.data.frame(test_data$wgcna_link,test_data$wgcna_node,directed = F) %>% simplify()
 #print as pdf&png
-network <- ggraph(graph_data,layout = 'kk')+
+net_theme <- theme_bw()+theme(
+  axis.title = element_blank(),
+  axis.text = element_blank(),
+  panel.border = element_blank(),
+  axis.ticks = element_blank(),
+  panel.grid = element_blank()
+)
+theme_set(net_theme)
+
+network <- ggraph(graph_data,layout = 'fr')+
   geom_edge_link()+
   geom_node_point(aes(color=color))
 
