@@ -40,7 +40,7 @@ manhattan plot 使用 R 的 [qqman](https://cran.r-project.org/web/packages/qqma
 
 ## heatmao plot
 
-heatmap plot 使用 R 的 [pheatmap](https://cran.r-project.org/web/packages/pheatmap/pheatmap.pdf) 包进行可视化,默认使用的 layout 是 [layout.fruchterman.reingold](https://en.wikipedia.org/wiki/Force-directed_graph_drawing)。
+heatmap plot 使用 R 的 [pheatmap](https://cran.r-project.org/web/packages/pheatmap/pheatmap.pdf) 包进行可视化。
 
 ![image](./demo_plots/pheatmap_demo.png)
 ## wgcna network
@@ -49,7 +49,7 @@ network plot 使用 R 的 [ggraph](https://github.com/thomasp85/ggraph) 包进�
 
 ![image](./demo_plots/net_work_layout.png)
 
-需要注意的是当 network 的数据量很大的时候(nodes > 1000)**不适合**使用 'fr' 的 layout,很消耗计算机资源。
+需要注意的是当 network 的数据量很大的时候(nodes > 1000)**不适合**使用 'fr' 的 layout,很消耗计算机资源， wgcna network 默认使用的 layout 是 [layout.fruchterman.reingold](https://en.wikipedia.org/wiki/Force-directed_graph_drawing)。
 
 ![image](./demo_plots/wgcna_demo.png)
 
