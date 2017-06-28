@@ -1,7 +1,6 @@
 #---------
 #venn plot
 #---------
-library(argparser)
 library(VennDiagram)
 oneName <- function() paste(sample(LETTERS,5,replace=TRUE),collapse="")
 geneNames <- replicate(1000,oneName())
@@ -30,3 +29,5 @@ venn_plot <- function(venn_data,fill_colour,file_name,main = NULL){
     margin = 0.1  #set plot's size margin more biger the size more samll
   )
 }
+fill_col <- c("#386cb0","#fdb462","#7fc97f","#ef3b2c")
+venn_plot(venn_data = list(A=GroupA,B=GroupB,C=GroupC),fill_colour = fill_col[1:3],file_name = 'venn_group_three.tiff')

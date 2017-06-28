@@ -1,3 +1,6 @@
 # all pdf files
 *.pdf
+# R histoty file
 .Rhistory
+# all test data files
+data/*
