@@ -1,21 +1,13 @@
-#----------------------------------------
-#this script to plot venn by chencheng
-#use vennDiagram library
-#create on 2017-3-15
-#----------------------------------------
-#----create test data----
-library(argparser)
+#---------
+#venn plot
+#---------
+library(VennDiagram)
 oneName <- function() paste(sample(LETTERS,5,replace=TRUE),collapse="")
 geneNames <- replicate(1000,oneName())
 GroupA <- sample(geneNames,400,replace = F)
 GroupB <- sample(geneNames,300,replace = F)
 GroupC <- sample(geneNames,200,replace = F)
 GroupD <- sample(geneNames,500,replace = F)
-#-----venn plot by vennDiagram-----
-if(!require(VennDiagram)){
-  install.packages("VennDiagram")
-  library(VennDiagram)
-}
 # p <- argparser::arg_parser('this is a R script to plot Venn')
 # p <- add_argument(p,'file_path',help = 'pca file path',type = "character")
 # p <- add_argument(p,'group_sample',help = 'pca group information',type = "character")
@@ -37,5 +29,5 @@ venn_plot <- function(venn_data,fill_colour,file_name,main = NULL){
     margin = 0.1  #set plot's size margin more biger the size more samll
   )
 }
-
-                          
+fill_col <- c("#386cb0","#fdb462","#7fc97f","#ef3b2c")
+venn_plot(venn_data = list(A=GroupA,B=GroupB,C=GroupC),fill_colour = fill_col[1:3],file_name = 'venn_group_three.tiff')

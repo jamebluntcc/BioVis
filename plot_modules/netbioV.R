@@ -1,19 +1,22 @@
-#try netbiov plot
-#first to use igraph
+#-------------
+# netbiov plot
+#-------------
+library(netbiov)
 library(igraph)
-library(tidyverse)
-nodes <- read_delim("../data/Dataset1-Media-Example-NODES.csv",
-                    delim = ",",
-                    col_names = T)
-nodes$X6 <- NULL
-nodes$col[nodes$type.label == 'Newspaper'] <- 'red'
-nodes$col[nodes$type.label == 'TV'] <- 'green'
-nodes$col[nodes$type.label == 'Online'] <- 'yellow'
-
-links <- read_csv("../data/Dataset1-Media-Example-EDGES.csv",col_names = T)
-links <- aggregate(links[,3],links[,-3],sum)
-links <- dplyr::arrange(links,from,to)
-net <- graph.data.frame(d = links,vertices = nodes,directed = F)
-kk <- mst.plot(g1,expression = rnorm(vcount(g1)),v.size = 1)
-cols <- nodes$col
-net_plot <- mst.plot(net,bg = 'white',v.lab = nodes$media,vertex.color = cols[1:16])
+#loading data
+data("PPI_Athalina")
+data("modules_PPI_Athalina")
+#netbioV
+opar <- par(no.readonly = T)
+mst.plot(g1,layout.function = layout.fruchterman.reingold,expression = rnorm(vcount(g1)),v.size = 1)
+#set color
+my_col_func <- colorRampPalette(RColorBrewer::brewer.pal(9,'Set1'))
+my_col <- my_col_func(24)
+#use plot.modules
+plot.modules(g1,
+             mod.list = lm,
+             modules.color = my_col,
+             mod.lab = T,
+             lab.color = 'orange4',
+             lab.cex = 1,
+             layout.function = layout.kamada.kawai)
