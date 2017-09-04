@@ -56,3 +56,11 @@ network plot 使用 R 的 [ggraph](https://github.com/thomasp85/ggraph) 包进�
 在生物 network 的可视化上，也可以参考  [netbioV](https://www.bioconductor.org/packages/devel/bioc/vignettes/netbiov/inst/doc/netbiov-intro.pdf) :R 的一个 network 包。
 
 ![image](./demo_plots/netbio.png)
+
+## geneStructure plot
+
+geneStructure plot 使用 R 的 [ggplot2](https://github.com/tidyverse/ggplot2) 进行可视化，其中 WHd 中可以通过设置 show fpkm 参数在 Y轴上显示。
+
+![image](./demo_plots/Mhd.png)
+
+![image](./demo_plots/WHd.png)
