@@ -64,3 +64,9 @@ geneStructure plot 使用 R 的 [ggplot2](https://github.com/tidyverse/ggplot2) 
 ![image](./demo_plots/Mhd.png)
 
 ![image](./demo_plots/WHd.png)
+
+## Snp Plot
+
+snp plot 使用 [bedtools](http://bedtools.readthedocs.io/en/latest/) 做 slide windows 然后再用 R 进行绘图，整个流程由 python 进行衔接。
+
+![image](./demo_plots/WHd_MHd_chr1AL.png)
