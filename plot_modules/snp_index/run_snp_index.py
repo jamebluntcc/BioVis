@@ -2,8 +2,7 @@ import os
 import click
 import subprocess
 #from get_group_table import get_group_table
-basedir = './'
-SNP_INDEX_PATH = './'
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 @click.command()
 @click.option('--bedfile', help='bed slider file')
@@ -13,7 +12,7 @@ def run_script(bedfile,filepath, outdir):
     # run bash&R script for snp index
     # bash generate bed.out file
     print '--start--'
-    bedCmd = 'sh cmd.sh {0} {1}'.format(bedfile, filepath)
+    bedCmd = 'sh {0} {1} {2}'.format(os.path.join(basedir, 'cmd.sh'), bedfile, filepath)
     subprocess.call(bedCmd,shell=True)
     # add if bed path exists
     if not os.path.exists(outdir):
